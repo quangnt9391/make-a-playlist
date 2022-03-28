@@ -1,4 +1,5 @@
 # Playlist.py
+import webbrowser
 class Video:
 	def __init__(self, title, link):
 		self.title = title
@@ -28,6 +29,7 @@ def read_videos():
 	return videos
 	
 def read_playlist():
+	#option 1 : create playlist
 	name = input("Enter Playlist name: ") + "\n"
 	description = input("Enter playlist description: ") + "\n"
 	rating = input("Enter playlist rating: ") + "\n"
@@ -49,6 +51,9 @@ def print_videos(videos):
 		print_video(videos[i])
 
 def print_playlist(playlist):
+	# option 2: Show playlist
+	print("\n************************\n")
+	print("\n     PLAYLIST INFOMATION     \n")
 	print("Playlist's name: ", playlist.name, end="")
 	print("Playlist's description: ", playlist.description, end="")
 	print("Playlist's rating: ", playlist.rating, end="")
@@ -99,9 +104,10 @@ def read_playlist_from_txt():
 		videos = read_videos_from_txt(file)
 	playlist = Playlist(name, description, rating, videos)
 	return playlist
+
 def main_menu():
 	print(" --------------------- ")
-	print("| 1. Creat playlist   |")
+	print("| 1. Create playlist   |")
 	print("| 2. Show playlist    |")
 	print("| 3. Play a video     |")
 	print("| 4. Add a video      |")
@@ -110,12 +116,60 @@ def main_menu():
 	print("| 7. Save and Exit    |")
 	print(" --------------------- ")
 
+def select_in_range(prompt, min, max):
+	choice = input(prompt)
+	while not choice.isdigit() or int(choice) < min or int(choice) > max:
+		choice = input(prompt)
+	return choice
+
+def play_video(playlist):
+	print_videos(playlist.videos)
+	select = select_in_range("Enter number of video you want to play: ", 1, len(playlist.videos))
+	video = playlist.videos[int(select) - 1]
+	print("play video: " + video.title + "with link: " + video.link)
+	webbrowser.open(video.link, new=2)
+def add_video(playlist):
+	name = playlist.name
+	description = playlist.description
+	rating = playlist.rating
+	videos = playlist.videos
+	print("Enter new video: ")
+	video = read_video()
+	videos.append(video)
+	playlist = Playlist(name, description, rating, videos)
+	return playlist
+
+
 def main():
-	main_menu()
-	playlist = read_playlist()
-	write_playlist_to_txt(playlist)
-	playlist = read_playlist_from_txt()
-	print_playlist(playlist)
+	try:
+		playlist = read_playlist_from_txt()
+		print("data loaded successfully!!")
+	except:
+		print("welcome first user, please Create playlist first")
+
+	while True:
+		main_menu()
+		choice = select_in_range("Enter an option: ", 1, 7)
+		choice = int(choice)
+		if choice == 1:
+			playlist = read_playlist()
+			input("Press Enter to continue!!")
+		elif choice == 2:
+			print_playlist(playlist)
+			input("Press Enter to continue!!")
+		elif choice == 3:
+			play_video(playlist)
+			input("Press Enter to continue!!")
+		elif choice == 4:
+			add_video(playlist)
+			input("Press Enter to continue!!")
+
+		elif choice == 7:
+			write_playlist_to_txt(playlist)
+			break
+
+	# playlist = read_playlist_from_txt()
+	# print_playlist(playlist)
 
 
 
