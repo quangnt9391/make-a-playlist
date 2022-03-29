@@ -29,7 +29,7 @@ def read_videos():
 	return videos
 	
 def read_playlist():
-	#option 1 : create playlist
+#option 1 : create playlist
 	name = input("Enter Playlist name: ") + "\n"
 	description = input("Enter playlist description: ") + "\n"
 	rating = input("Enter playlist rating: ") + "\n"
@@ -51,7 +51,7 @@ def print_videos(videos):
 		print_video(videos[i])
 
 def print_playlist(playlist):
-	# option 2: Show playlist
+# option 2: Show playlist
 	print("\n************************\n")
 	print("\n     PLAYLIST INFOMATION     \n")
 	print("Playlist's name: ", playlist.name, end="")
@@ -120,30 +120,72 @@ def select_in_range(prompt, min, max):
 	choice = input(prompt)
 	while not choice.isdigit() or int(choice) < min or int(choice) > max:
 		choice = input(prompt)
+		# choice = int(choice)
 	return choice
 
 def play_video(playlist):
+#option 3: Play a video
 	print_videos(playlist.videos)
 	select = select_in_range("Enter number of video you want to play: ", 1, len(playlist.videos))
 	video = playlist.videos[int(select) - 1]
 	print("play video: " + video.title + "with link: " + video.link)
 	webbrowser.open(video.link, new=2)
-def add_video(playlist):
-	name = playlist.name
-	description = playlist.description
-	rating = playlist.rating
-	videos = playlist.videos
+
+def add_video(playlist): 
+#option 4: Add a video 
 	print("Enter new video: ")
 	video = read_video()
-	videos.append(video)
-	playlist = Playlist(name, description, rating, videos)
+	playlist.videos.append(video)
+	print("Add video successfully!!")
 	return playlist
 
+def update_playlist(playlist):
+#option 5: update playlist
+	print("1. name: ", playlist.name)
+	print("2. description: ", playlist.description)
+	print("3. rating: ", playlist.rating)
+	print_videos(playlist.videos)
+	choice_update = select_in_range("What you want to change:", 1, 3)
+	choice_update = int(choice_update)
+
+	if choice_update == 1:
+		name = input("Enter new playlist's name: ") + "\n"
+		playlist.name = name
+		print("successfully to rename!!!")
+		return playlist
+		
+	elif choice_update == 2:
+			description = input("Enter new playlist's description: ") + "\n"
+			playlist.description = description
+			print("successfully to redescription!!!")
+			return playlist
+		
+	elif choice_update == 3:
+			rating = input("Enter new playlist's rating: ") + "\n"
+			playlist.rating = rating
+			print("successfully to rerating!!!")
+			return playlist
+	
+	print("Update successfully!!")
+
+def delete_video(playlist):
+	print_videos(playlist.videos)
+	total = len(playlist.videos)
+	new_videos = []
+	choice = select_in_range("select video you want to delete: ",1,total)
+	choice = int(choice)
+	for i in range(total):
+		if i == choice - 1:
+			continue
+		new_videos.append(playlist.videos[i])
+	playlist.videos = new_videos
+	print("delete video successfully!!")
+	return playlist 
 
 def main():
 	try:
 		playlist = read_playlist_from_txt()
-		print("data loaded successfully!!")
+		print("data loaded successfully!!")	
 	except:
 		print("welcome first user, please Create playlist first")
 
@@ -153,17 +195,22 @@ def main():
 		choice = int(choice)
 		if choice == 1:
 			playlist = read_playlist()
-			input("Press Enter to continue!!")
+			input("\nPress Enter to continue!!\n")
 		elif choice == 2:
 			print_playlist(playlist)
-			input("Press Enter to continue!!")
+			input("\nPress Enter to continue!!\n")
 		elif choice == 3:
 			play_video(playlist)
-			input("Press Enter to continue!!")
+			input("\nPress Enter to continue!!\n")
 		elif choice == 4:
 			add_video(playlist)
-			input("Press Enter to continue!!")
-
+			input("\nPress Enter to continue!!\n")
+		elif choice == 5:
+			update_playlist(playlist)
+			input("\nPress Enter to continue!!\n")
+		elif choice == 6:
+			delete_video(playlist)
+			input("\nPress Enter to continue!!\n")
 		elif choice == 7:
 			write_playlist_to_txt(playlist)
 			break
